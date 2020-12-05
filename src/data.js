@@ -1,16 +1,4 @@
-import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-
-import MainScreen from './src/screens/MainScreen';
-import FilmDescription from './src/screens/FilmDescriptionScreen';
-
-
-const DATA = {
+export const DATA = {
   popularList: [
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba1',
@@ -52,33 +40,3 @@ const DATA = {
     },
   ]
 }
-
-/* NOTE: установил навигацию и карусель */
-/* FIXME: импортировать экраны */
-const Stack = createStackNavigator();
-
-export default function App() {
-
-  return (
-
-    <SafeAreaView style={styles.container}>
-      <NavigationContainer>
-
-        <StatusBar style='auto'></StatusBar>
-        <Stack.Navigator>
-          <Stack.Screen name="home" component={MainScreen} />
-          <Stack.Screen name="filmDescription" component={FilmDescription} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaView>
-
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    marginTop: 35 /* FIXME: заменить на адекватный статусбар */
-  }
-});
