@@ -6,11 +6,15 @@ import Rating from './UI/Rating'
 
 
 
-const FilmsSlider = ({ sliderTitle, filmsList, size, navigation }) => {
+const FilmsSlider = ({ navigation, size, sliderTitle, filmsList }) => {
+
+  function openFilmHandler(filmList, id) {
+    navigation.navigate('filmDescription', { filmId: id, filmsList })
+  }
 
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('filmDescription')}>{/* вызываю колбек, в котором возвращаю выбранный айтем */}
+      <TouchableOpacity activeOpacity={0.7} onPress={() => openFilmHandler(filmsList, item.id)}>{/* вызываю колбек, в котором возвращаю выбранный айтем */}
         <View style={styles.item}>
 
           <View style={styles.carouselImageWrapper}>
@@ -22,8 +26,6 @@ const FilmsSlider = ({ sliderTitle, filmsList, size, navigation }) => {
         </View>
 
       </TouchableOpacity>
-
-
     );
   }
 
@@ -44,12 +46,11 @@ const FilmsSlider = ({ sliderTitle, filmsList, size, navigation }) => {
       height: (size === 'large' ? 470 : 330),
       marginHorizontal: 10,
       marginStart: 0,
-      /*       borderColor: '#292929',
-            borderBottomWidth: 1, */
     },
     carouselImageWrapper: {
       height: (size === 'large' ? 400 : 240),
-      marginBottom: 10
+      marginBottom: 10,
+      elevation: 5
     },
     carouselImage: {
       width: '100%',
@@ -61,7 +62,8 @@ const FilmsSlider = ({ sliderTitle, filmsList, size, navigation }) => {
       color: '#fff',
       fontSize: 22,
       fontWeight: "400",
-      marginBottom: 5
+      marginBottom: 5,
+
     },
     rating: {
       color: '#ccc',
@@ -81,10 +83,7 @@ const FilmsSlider = ({ sliderTitle, filmsList, size, navigation }) => {
         keyExtractor={item => item.id}
       />
     </View>
-
   );
 }
-
-
 
 export default FilmsSlider;

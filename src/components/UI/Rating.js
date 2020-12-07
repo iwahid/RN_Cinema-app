@@ -1,6 +1,6 @@
 import React from 'react';
 import { Entypo } from '@expo/vector-icons'
-import { THEME } from './theme';
+import { THEME } from '../../theme';
 
 const Rating = ({ rating }) => {
   let whole = Math.trunc(rating / 2)

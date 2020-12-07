@@ -8,6 +8,8 @@ import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import MainScreen from './src/screens/MainScreen';
 import FilmDescription from './src/screens/FilmDescriptionScreen';
+import { THEME } from './src/theme';
+import TicketOrderScreen from './src/screens/TicketOrderScreen';
 
 
 const DATA = {
@@ -58,19 +60,46 @@ const DATA = {
 const Stack = createStackNavigator();
 
 export default function App() {
-
   return (
-
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
-
         <StatusBar style='auto'></StatusBar>
-        <Stack.Navigator>
-          <Stack.Screen name="home" component={MainScreen} />
-          <Stack.Screen name="filmDescription" component={FilmDescription} />
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: Platform.OS === 'android' ? THEME.BACKGROUND_COLOR : '#ffffff'
+            },
+            headerTintColor: Platform.OS === 'android' ? '#ffffff' : THEME.BACKGROUND_COLOR,
+            headerTitleStyle: {
+              fontWeight: '100',
+            },
+          }}>
+          <Stack.Screen name="home" component={MainScreen} options={{
+            headerTitle: 'Кинотеатр',
+            headerTintColor: '#fff',
+            headerRight: () => (
+              <Text>123</Text>
+            )
+          }} />
+          <Stack.Screen name="filmDescription" component={FilmDescription}
+            options={{
+              headerTitle: 'Описание картины',
+              headerTintColor: '#fff',
+              headerRight: () => (
+                <Text>123</Text>
+              )
+            }} />
+          <Stack.Screen name="ticketOrder" component={TicketOrderScreen}
+            options={{
+              headerTitle: 'Заказ билета',
+              headerTintColor: '#fff',
+              headerRight: () => (
+                <Text>123</Text>
+              )
+            }} />
         </Stack.Navigator>
       </NavigationContainer>
-    </SafeAreaView>
+    </SafeAreaView >
 
   );
 }

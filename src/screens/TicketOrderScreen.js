@@ -1,30 +1,38 @@
 import React, { useEffect } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Button } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { View, Text, StyleSheet, ImageBackground, ScrollView } from 'react-native'
+import DATA from './../data'
 import Rating from './../components/UI/Rating'
 import { THEME } from '../theme'
 import FormButton from '../components/UI/Button'
-import data from '../data'
-import TicketOrderScreen from './TicketOrderScreen'
+import Separator from '../components/UI/Separator'
 
-function FilmDescription(props) {
+function TicketOrderScreen(props) {
 
-  /* некоторые данные, переданные из React компонента, а не экрана Stack.screen. */
-  const { filmId, filmsList } = props.route.params
-  const film = filmsList.find(film => film.id == filmId)
+  console.log(props)
 
-  function ticketOrderHandler(id) {
-    props.navigation.navigate('ticketOrder', { film })
+  const { film } = props.route.params
+  const filmId = film.id
+
+  const dateList = ['14 Марта', '15 Марта', '16 Марта', '17 Марта', '18 Марта', '19 Марта']
+
+  const dateItem = (item) => {
+
+    return (
+      <View style={styles.dateItem}>
+        <Text style={styles.dateItemtext}>
+          {item}
+        </Text>
+      </View>
+    )
   }
-
 
   return (
     <View style={styles.container}>
-
+      {/* FIXME: возможно, верхнюю часть страницы можно вынести в отдельный комопонент. Но пока они слишком различны, и их кастомизация по переданным параметрам по трудоёмкости будет сравнима с написанием отдельных компонентов */}
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.header}>
           <ImageBackground source={{ uri: film.img }} style={styles.bgImage}>
-            <ImageBackground source={require('./../../assets/Shadow3.png')} style={styles.bgShadow}>
+            <ImageBackground source={require('./../../assets/Shadow4.png')} style={styles.bgShadow}>
               <View style={styles.headerInfo}>
                 <Text style={styles.filmTitle}>{film.title}</Text>
                 <View style={styles.genreList}>
@@ -42,14 +50,25 @@ function FilmDescription(props) {
             </ImageBackground>
           </ImageBackground>
         </View>
-        <View style={styles.filmPlot}>
+
+        <View style={styles.body}>
+          <Separator></Separator>
+
+          
+          <Text>Дата показа</Text>
+          <ScrollView style={styles.dateList} horizontal={true}>
+            {dateList.map(item => dateItem(item))}
+          </ScrollView>
+        </View>
+
+        {/*   <View style={styles.filmPlot}>
           <Text style={styles.filmPlotTitle}>Сюжет</Text>
           <Text style={styles.filmPlotDescription}>{film.description}</Text>
-        </View>
+        </View> */}
 
       </ScrollView>
       <View style={styles.formButtonWrapper}>
-        <FormButton onPress={() => ticketOrderHandler()} buttonTitle="Выбрать сеанс" ></FormButton>
+        <FormButton buttonTitle="Выбрать сеанс"></FormButton>
       </View>
     </View>
   )
@@ -66,12 +85,15 @@ const styles = StyleSheet.create({
   scrollContainer: {
     width: '100%',
     height: '100%',
-    marginBottom: 65
+    marginBottom: 65,
   },
   header: {
-    height: 350,
+    height: 150,
     width: '100%',
     marginBottom: 20
+  },
+  body: {
+    paddingHorizontal: 15,
   },
   bgImage: {
     flex: 1,
@@ -81,7 +103,6 @@ const styles = StyleSheet.create({
   },
   bgShadow: {
     height: '100%'
-
   },
 
 
@@ -89,7 +110,7 @@ const styles = StyleSheet.create({
   headerInfo: {
     position: 'absolute',
     bottom: 0,
-    paddingLeft: 10,
+    paddingLeft: 15,
 
   },
   filmTitle: {
@@ -132,24 +153,51 @@ const styles = StyleSheet.create({
   },
 
 
-  filmPlot: {
-    padding: 10,
+
+  /* 
+    filmPlot: {
+      paddingHorizontal: 15,
+    },
+    filmPlotTitle: {
+      color: '#fff',
+      fontSize: 20,
+      fontWeight: "600",
+      marginBottom: 10,
+      color: '#fff'
+    },
+    filmPlotDescription: {
+      fontSize: 14,
+      borderColor: '#fff',
+      color: '#fff',
+      opacity: 0.7,
+      lineHeight: 20,
+      textAlign: 'justify'
+    }, */
+  dateList: {
+    marginTop: 15,
   },
-  filmPlotTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 10,
-    color: '#fff'
+  dateItem: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginRight: 15,
+
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center"
   },
-  filmPlotDescription: {
+  dateItemtext: {
     fontSize: 14,
     borderColor: '#fff',
     color: '#fff',
-    opacity: 0.7,
     lineHeight: 20,
     textAlign: 'justify'
   },
+
+
+
 
 
 
@@ -157,9 +205,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     bottom: 0,
-    padding: 10,/* 
-    backgroundColor: 'white' */
+    padding: 10,
   },
 })
 
-export default FilmDescription
+export default TicketOrderScreen

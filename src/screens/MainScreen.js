@@ -1,20 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import FilmsSlider from '../components/FilmsSlider'
 
 
 import { DATA } from '../data'
+import { THEME } from '../theme';
 
 const MainScreen = (props) => {
   /* FIXME: заменить на нормальные данные */
-  /*  const { popularList, otherList } = props.data */
   const { popularList, otherList } = DATA
   const navigation = props.navigation
 
 
   const renderItem = ({ item }) => {
-    console.log(item.img)
     return (
       <View style={styles.item}>
         <View style={styles.carouselImageWrapper}>
@@ -23,18 +22,13 @@ const MainScreen = (props) => {
           }} style={styles.carouselImage} />
         </View>
 
-
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.rating}>{item.rating}</Text>
       </View>
     );
   }
 
-
   return (
-    /* 
-    1. Главный список с фильмами
-    2. Два второстепенных списка */
     <View style={styles.container}>
       <ScrollView>
 
@@ -50,8 +44,9 @@ const MainScreen = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    backgroundColor: '#191919'
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor:  THEME.BACKGROUND_COLOR,
   },
 });
 
