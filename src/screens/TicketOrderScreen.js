@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { View, Text, StyleSheet, ImageBackground, ScrollView } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity } from 'react-native'
 import DATA from './../data'
 import Rating from './../components/UI/Rating'
 import { THEME } from '../theme'
@@ -8,22 +8,38 @@ import Separator from '../components/UI/Separator'
 
 function TicketOrderScreen(props) {
 
-  console.log(props)
-
   const { film } = props.route.params
   const filmId = film.id
 
+  const [dateChoose, setDateChoose] = useState('14 Марта')
+  const [timeChoose, setTimeChoose] = useState('14:20')
+
   const dateList = ['14 Марта', '15 Марта', '16 Марта', '17 Марта', '18 Марта', '19 Марта']
+  const timeList = ['10:20', '12:30', '12:40', '14:20', '16:10', '18:00', '20:20']
 
-  const dateItem = (item) => {
+  const chooseItem = (item, type) => {
 
-    return (
-      <View style={styles.dateItem}>
-        <Text style={styles.dateItemtext}>
-          {item}
-        </Text>
-      </View>
-    )
+    /* за подобные вещи нужно отрубать руки и скармливать их индийским крокодилам */
+    if (type == 'date') {
+      return (
+        <TouchableOpacity activeOpacity={0.7} onPress={() => setDateChoose(item)}>
+          <Text style={dateChoose == item ? { ...styles.chooseItemText, ...styles.chooseItemTextActive } : styles.chooseItemText}>
+            {item}
+          </Text>
+        </TouchableOpacity>
+      )
+    }
+    if (type == 'time') {
+      return (
+        <TouchableOpacity activeOpacity={0.7} onPress={() => setTimeChoose(item)}>
+          <Text style={timeChoose == item ? { ...styles.chooseItemText, ...styles.chooseItemTextActive } : styles.chooseItemText}>
+            {item}
+          </Text>
+        </TouchableOpacity>
+
+      )
+    }
+
   }
 
   return (
@@ -54,17 +70,28 @@ function TicketOrderScreen(props) {
         <View style={styles.body}>
           <Separator></Separator>
 
+          <View style={styles.optionsChoose}>
+            <View style={styles.сhooseWrapper}>
+              <Text style={styles.сhooseTitle}>Дата показа</Text>
+              <ScrollView style={styles.dateList} horizontal={true}>
+                {dateList.map(item => chooseItem(item, type = 'date'))}
+              </ScrollView>
+            </View>
+
+
+            <View style={styles.сhooseWrapper}>
+              <Text style={styles.сhooseTitle}>Время показа</Text>
+              <ScrollView style={styles.dateList} horizontal={true}>
+                {timeList.map(item => chooseItem(item, type = 'time'))}
+              </ScrollView>
+            </View>
+          </View>
+
+          <Separator></Separator>
           
-          <Text>Дата показа</Text>
-          <ScrollView style={styles.dateList} horizontal={true}>
-            {dateList.map(item => dateItem(item))}
-          </ScrollView>
+
         </View>
 
-        {/*   <View style={styles.filmPlot}>
-          <Text style={styles.filmPlotTitle}>Сюжет</Text>
-          <Text style={styles.filmPlotDescription}>{film.description}</Text>
-        </View> */}
 
       </ScrollView>
       <View style={styles.formButtonWrapper}>
@@ -91,9 +118,6 @@ const styles = StyleSheet.create({
     height: 150,
     width: '100%',
     marginBottom: 20
-  },
-  body: {
-    paddingHorizontal: 15,
   },
   bgImage: {
     flex: 1,
@@ -153,47 +177,40 @@ const styles = StyleSheet.create({
   },
 
 
-
-  /* 
-    filmPlot: {
-      paddingHorizontal: 15,
-    },
-    filmPlotTitle: {
-      color: '#fff',
-      fontSize: 20,
-      fontWeight: "600",
-      marginBottom: 10,
-      color: '#fff'
-    },
-    filmPlotDescription: {
-      fontSize: 14,
-      borderColor: '#fff',
-      color: '#fff',
-      opacity: 0.7,
-      lineHeight: 20,
-      textAlign: 'justify'
-    }, */
-  dateList: {
-    marginTop: 15,
+  /* ///////////////// body //////////////// */
+  /*  FIXME: сделать анимированный выбор items */
+  body: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
-  dateItem: {
+  optionsChoose: {
+    marginVertical: 15,
+  },
+  сhooseWrapper: {
+    marginBottom: 15,
+  },
+  сhooseTitle: {
+    color: '#999',
+    fontSize: 12
+  },
+  dateList: {
+    marginVertical: 15,
+  },
+  chooseItemText: {
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 5,
     marginRight: 15,
-
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center"
-  },
-  dateItemtext: {
     fontSize: 14,
     borderColor: '#fff',
     color: '#fff',
     lineHeight: 20,
-    textAlign: 'justify'
+  },
+  chooseItemTextActive: {
+    borderColor: THEME.ACCENT_COLOR,
+    color: '#05CB81'
   },
 
 
