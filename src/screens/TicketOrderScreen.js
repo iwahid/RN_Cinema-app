@@ -5,6 +5,7 @@ import Rating from './../components/UI/Rating'
 import { THEME } from '../theme'
 import FormButton from '../components/UI/Button'
 import Separator from '../components/UI/Separator'
+import HallLayout from '../components/HallLayout'
 
 function TicketOrderScreen(props) {
 
@@ -12,138 +13,74 @@ function TicketOrderScreen(props) {
   const filmId = film.id
 
   const [dateChoose, setDateChoose] = useState('14 Марта')
-  const [timeChoose, setTimeChoose] = useState('14:20')
-
   const dateList = ['14 Марта', '15 Марта', '16 Марта', '17 Марта', '18 Марта', '19 Марта']
+
+  const [timeChoose, setTimeChoose] = useState('14:20')
   const timeList = ['10:20', '12:30', '12:40', '14:20', '16:10', '18:00', '20:20']
 
 
-  const chooseItem = (item, type) => {
+  const chooseItem = (item, type, index) => {
 
     /* за подобные вещи нужно отрубать руки и скармливать их индийским крокодилам */
     if (type == 'date') {
       return (
-        <TouchableOpacity activeOpacity={0.7} onPress={() => setDateChoose(item)}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => setDateChoose(item)} key={index}>
           <Text style={dateChoose == item ? { ...styles.chooseItemText, ...styles.chooseItemTextActive } : styles.chooseItemText}>
             {item}
           </Text>
         </TouchableOpacity>
       )
     }
+
     if (type == 'time') {
       return (
-        <TouchableOpacity activeOpacity={0.7} onPress={() => setTimeChoose(item)}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => setTimeChoose(item)} key={index}>
           <Text style={timeChoose == item ? { ...styles.chooseItemText, ...styles.chooseItemTextActive } : styles.chooseItemText}>
             {item}
           </Text>
         </TouchableOpacity>
-
       )
     }
-
   }
 
 
+  /* хук, для хранения всех данных, о выбранном сеансе */
+  const [orderParams, setOrderParams] = useState({
+    filmId: '',
+    showDate: '',
+    showTime: '',
+    places: []
+  })
 
-  const placeRoomRender = () => {
+  /* хук и функция, для получения возвращаемых значений из HallLayout. Значения возвращаются не в качестве объекта (при импорте и вызове компонента), а через колбек функцию с хуками. Использую "подъём состояния" */
+  const [places, setPlaces] = useState([])
 
-    /* карта зала */
-    let array = [
-      [0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0],
-      [0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0],
-      [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-      [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-      [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-      [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-      [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-      [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1]
-    ]
-    /* карта мест для бронирования
-    0 - проход
-    1 - свободно
-    2 - забранировано
-    3 - выбрано
-     */
-    let [array2, updateArray2] = useState(
-      [
-        [0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0],
-        [0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0],
-        [1, 1, 1, 0, 2, 1, 1, 1, 0, 1, 1, 1],
-        [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-        [1, 1, 1, 0, 1, 1, 2, 1, 0, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 0, 2, 2, 1, 1, 0, 1, 1, 1],
-        [1, 1, 1, 0, 1, 2, 1, 1, 0, 1, 1, 1],
-        [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-        [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1]
-      ]
-    )
-
-    /* объект со значением выбранного места */
-    let [choosePlace, setChoosePlace] = useState([{ x: 0, y: 0 }])
-
-    /* функция выбора места, на сформированном зале */
-    const setPlaceHandler = (place) => {
-      console.log("Выбрано место ", place)
-      let indexFindPlace = null
-
-      /* функция определения того, выбрано ли место повторно */
-      const findPlace = choosePlace.find((item, index) => {
-        if (item.x == place.x && item.y == place.y) {
-          indexFindPlace = index
-          return true
-        }
-      })
-
-      /* При первичном выборе - добавить в массив выбранных мест, и обновлять цвета. При повторном нажатии - удалить выбор из массива выбранных мест и обновить цвета */
-      if (findPlace) {
-        console.log("Выбрано повторно")
-        updateArray2(prev => [...prev, prev[place.y][place.x] = 1])
-        setChoosePlace((prev) => {
-          let temp = [...prev]
-          temp.splice(indexFindPlace, 1)
-          return temp
-        })
-      } else if (array2[place.y][place.x] !== 2) {
-        setChoosePlace((prev) => [...prev, place])
-        console.log("Выбрано впервые", choosePlace)
-        updateArray2(prev => [...prev, prev[place.y][place.x] = 3])
-      }
-    }
-
-
-    /* рендер карты зала */
-    let result = []
-    for (let i = 0; i < array.length; i++) {
-
-      let subArray = array[i] /* "ряд" для разбора */
-      let subResult = [] /* формирование "ряда" */
-
-      for (let j = 0; j < subArray.length; j++) {
-        if (subArray[j] == 1)
-          subResult.push(
-            <TouchableOpacity
-              style={array2[i][j] == 1 ? styles.place : array2[i][j] == 2 ? styles.bookedPlace : styles.choosePlace}
-              onPress={() => setPlaceHandler({ x: j, y: i })}
-            ></TouchableOpacity>
-          )
-
-        if (subArray[j] == 0) /* формирование "проходов" в карте зала */
-          subResult.push(<TouchableOpacity style={styles.hallway}></TouchableOpacity>)
-      }
-      /* формирование целого рядя в общей схеме*/
-      result.push(<View style={styles.row}>{subResult.map(item => item)}</View>)
-    }
-
-    /* за этот фрагмент, тоже следовало бы четвертовать */
-    /* формирование всей схемы из отдельных рядов */
-    const hallScheme = <View style={styles.hallContainer}>{result.map(item => item)}</View>
-    return hallScheme /* FIXME: просто добавить стили View и onPress к кнопкам */
+  /**
+   * Колбек, асинхронно обновляющий массив с выбранными местами.
+   * @param  {array} currentPlaces - массив объектов, с выбранным местом и ценой.
+   */
+  const returnPlaces = (currentPlaces) => {
+    setPlaces(currentPlaces)
   }
 
-  let temp = placeRoomRender()
+  useEffect(() => {
+    setOrderParams({
+      filmId: filmId,
+      showDate: dateChoose,
+      showTime: timeChoose,
+      places: places
+    })
+    console.log("#############################################")
+    console.log("##                                         ##")
+    console.log("##              setOrderParams             ##")
+    console.log("##                                         ##")
+    console.log("##                                         ##")
+    console.log(orderParams)
+    console.log("#############################################")
+  }, [dateChoose, timeChoose, places]);
+
+
+
 
   return (
     <View style={styles.container}>
@@ -177,28 +114,50 @@ function TicketOrderScreen(props) {
             <View style={styles.сhooseWrapper}>
               <Text style={styles.сhooseTitle}>Дата показа</Text>
               <ScrollView style={styles.dateList} horizontal={true}>
-                {dateList.map(item => chooseItem(item, type = 'date'))}
+                {dateList.map((item, index) => chooseItem(item, type = 'date', index))}
               </ScrollView>
             </View>
-
 
             <View style={styles.сhooseWrapper}>
               <Text style={styles.сhooseTitle}>Время показа</Text>
               <ScrollView style={styles.dateList} horizontal={true}>
-                {timeList.map(item => chooseItem(item, type = 'time'))}
+                {timeList.map((item, index) => chooseItem(item, type = 'time', index))}
               </ScrollView>
             </View>
           </View>
 
           <Separator></Separator>
 
-          <View>
-            {/*     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(item => <TouchableOpacity style={styles.bg}></TouchableOpacity>) 
-            {'123'} */}
-            {temp}
+          {/* использую подъём состояния */}
+          <ScrollView style={styles.hallContainer}>
+            <HallLayout style={styles.container1} returnPlaces={returnPlaces}></HallLayout>
+          </ScrollView>
+          <View style={styles.orderInfoGroup}>
+            <View style={styles.orderInfoItem}>
+              <Text style={styles.orderInfoTitle}>Дата:</Text>
+              <Text style={styles.orderInfoText}>{orderParams.showDate}</Text>
+            </View>
+            <View style={styles.orderInfoItem}>
+              <Text style={styles.orderInfoTitle}>Время:</Text>
+              <Text style={styles.orderInfoText}>{orderParams.showTime}</Text>
+            </View>
+            <View style={styles.orderInfoItem}>
+              <Text style={styles.orderInfoTitle}>Место:</Text>
+              {/* при выводе выбранных мест, их номер увеличивается на единицу. И увеличивается здесь, а не в передаваемых и данных. */}
+              <View >{orderParams.places.map((place, index) => <Text style={styles.orderInfoText} key={index} >{`Ряд: ${place.y+1} Место: ${place.x+1}`}</Text>)}</View>
+            </View>
+            <View style={styles.orderInfoItem}>
+              <Text style={styles.orderInfoTitle}>Стоимость:</Text>
+              <Text style={styles.orderInfoText}>
+                {orderParams.places.length >= 1 && orderParams.places
+                  .map(place => place.cost)
+                  .reduce((sum, current) => current + sum)
+                } Руб
+              </Text>
+            </View>
           </View>
+          <Separator></Separator>
         </View>
-
 
       </ScrollView>
       <View style={styles.formButtonWrapper}>
@@ -301,7 +260,7 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   dateList: {
-    marginVertical: 15,
+    marginTop: 15,
   },
   chooseItemText: {
     paddingVertical: 5,
@@ -322,49 +281,30 @@ const styles = StyleSheet.create({
 
 
 
-  /* ////////////////// hall place ///////////// */
-  place: {
-    width: 18,
-    height: 16,
-    margin: 6,
-    backgroundColor: '#2F2F3B',
-    borderTopLeftRadius: 3,
-    borderTopRightRadius: 3,
-  },
-  hallway: {
-    width: 18,
-    height: 16,
-    margin: 6,
-    backgroundColor: THEME.BACKGROUND_COLOR
-  },
-  hallContainer: {
-    alignContent: 'center',
-    alignItems: 'center'
-  },
-  choosePlace: {
-    width: 18,
-    height: 16,
-    margin: 6,
-    borderTopLeftRadius: 3,
-    borderTopRightRadius: 3,
-    backgroundColor: THEME.ACCENT_COLOR,
-  },
-  bookedPlace: {
-    width: 18,
-    height: 16,
-    margin: 6,
-    borderTopLeftRadius: 3,
-    borderTopRightRadius: 3,
-    backgroundColor: '#9DA2B6',
-  },
-  /* 
-  #F85661 выбранный
-  9DA2B6 не доступно
-  2F2F3B доступно */
-  row: {
-    flexDirection: 'row'
-  },
+  /* //////////////////// orderInfoGroup /////////////////////// */
 
+  hallContainer: {
+    width: '100%',
+    marginTop: 20
+  },
+  orderInfoGroup: {
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    marginTop: 30,
+    marginBottom: 10,
+    width: '100%',
+  },
+  orderInfoItem: {
+  },
+  orderInfoTitle: {
+    color: '#999',
+    fontSize: 12
+  },
+  orderInfoText: {
+
+    color: '#fff',
+    fontSize: 14
+  },
 
 
 

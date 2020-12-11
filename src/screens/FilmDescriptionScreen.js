@@ -7,6 +7,7 @@ import FormButton from '../components/UI/Button'
 import data from '../data'
 import TicketOrderScreen from './TicketOrderScreen'
 
+
 function FilmDescription(props) {
 
   /* некоторые данные, переданные из React компонента, а не экрана Stack.screen. */
@@ -81,7 +82,6 @@ const styles = StyleSheet.create({
   },
   bgShadow: {
     height: '100%'
-
   },
 
 
