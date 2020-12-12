@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import MainScreen from './src/screens/MainScreen';
@@ -18,7 +18,8 @@ const DATA = {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba1',
       title: 'Семейка бигфутов',
       rating: '7.9',
-      img: 'https://kinohod.ru/o/5e/5b/5e5b3a52-13b5-48b4-9e21-833ba207c8ee.jpg'
+      img: 'https://kinohod.ru/o/5e/5b/5e5b3a52-13b5-48b4-9e21-833ba207c8ee.jpg',
+      description: 'Все семьи разные, но эта – самая разношерстная. Папа когда-то превратился в Бигфута, сын унаследовал его суперспособности и умение понимать язык животных, так еще и в доме вместе с ними и мамой живет целый зоопарк – огромный медведь, неутомимая белка и беспокойный енот со множеством очаровательных детенышей. Когда же уникальному заповеднику на Аляске понадобится помощь, вся семейка Бигфутов отправится в большое путешествие и покажет всему миру, на что способна их команда…   Все семьи разные, но эта – самая разношерстная. Папа когда-то превратился в Бигфута, сын унаследовал его суперспособности и умение понимать язык животных, так еще и в доме вместе с ними и мамой живет целый зоопарк – огромный медведь, неутомимая белка и беспокойный енот со множеством очаровательных детенышей. Когда же уникальному заповеднику на Аляске понадобится помощь, вся семейка Бигфутов отправится в большое путешествие и покажет всему миру, на что способна их команда…'
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f632',
@@ -54,12 +55,56 @@ const DATA = {
     },
   ]
 }
+/* массив со всеми фильмами, которые были / будут доступны для просмотра в кинотеатре */
+const filmsIdList = {
+  newList: ['435', '3498', '258687', '326', '328', '329', '448', '535341', '957887', '476'],
+  popularList: ['2360', '679486', '526', '522', '342', '397667', '447301', '1143242', '370', '32898'],
+  leaveList: ['389', '279102', '361', '195334', '324', '725190', '346', '325', '301', '41519'],
+  soonList: ['81314', '444', '530', '586397', '430', '111543', '1108577', '381', '474', '689'],
+}
 
-/* NOTE: установил навигацию и карусель */
-/* FIXME: импортировать экраны */
 const Stack = createStackNavigator();
 
 export default function App() {
+  /* FIXME: запись только один раз, перед релизом приложения. Просто наполнение раздела кинотеатра данными о фильмах в показе */
+  /*  const addData = async filmsList => {
+     console.log(filmsList)
+     const response = await fetch('https://rn-cinema-app-default-rtdb.firebaseio.com/data.json', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify(filmsList)
+     })
+     const responseData = await response.json()
+     console.log(responseData) 
+   }
+   addData(filmsIdList) */
+
+  const [filmsList, setFilmsList] = useState({})
+
+  const loadFilmList = async () => {
+    const response = await fetch(
+      'https://rn-cinema-app-default-rtdb.firebaseio.com/data.json',
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    )
+    const data = await response.json()
+    console.log('DATA', data)
+    const films = Object.keys(data).map(key => ({...data[key], id: key}))
+    console.log('films', films)
+    console.log('films', films[0].leaveList)
+    /* сохранять данные во внутреннем стейте приложения */
+  }
+  loadFilmList()
+
+  /* TODO: здесь я получаю списки всех доступных фильмов.
+    И загружаю по ним: [название, обложка, рейтинг] 
+    
+    После, при переходе на экран с фильмом, загружаю полный список данных о нём. 
+    Сразу же, на этом же экране (с целью оптимизации), после того как загружена основная информация, загружаю и данные о доступных сеансах. Поскольку, если человек открыл описание фильма, то по статистике в 80% случаев он заинтересуется покупкой билета. И что бы не заставлять человека ждать на экране с заказом билетов, оптимизирую этот момент и загружаю данные в момент бездействия пользователя (когда он читает описание фильма и не переходит никуда по экранам)
+    */
+
   return (
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
