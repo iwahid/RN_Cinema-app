@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity, Button } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import DATA from './../data'
 import Rating from './../components/UI/Rating'
 import { THEME } from '../theme'
 import FormButton from '../components/UI/Button'
 import Separator from '../components/UI/Separator'
 import HallLayout from '../components/HallLayout'
+import CustomText from './../components/UI/CustomText'
 
 function TicketOrderScreen(props) {
 
@@ -13,7 +14,7 @@ function TicketOrderScreen(props) {
   const filmId = film.id
 
   const [dateChoose, setDateChoose] = useState('14 Марта')
-  const dateList = ['14 Марта', '15 Марта', '16 Марта', '17 Марта', '18 Марта', '19 Марта']
+  const dateList = ['14 Сентября', '15 Марта', '16 Марта', '17 Марта', '18 Марта', '19 Марта']
 
   const [timeChoose, setTimeChoose] = useState('14:20')
   const timeList = ['10:20', '12:30', '12:40', '14:20', '16:10', '18:00', '20:20']
@@ -70,17 +71,39 @@ function TicketOrderScreen(props) {
       showTime: timeChoose,
       places: places
     })
-    console.log("#############################################")
-    console.log("##                                         ##")
-    console.log("##              setOrderParams             ##")
-    console.log("##                                         ##")
-    console.log("##                                         ##")
-    console.log(orderParams)
-    console.log("#############################################")
   }, [dateChoose, timeChoose, places]);
 
 
 
+  /**
+   * Функция подтверждения заказа. Выводит алерт с просьбой подтвердить покупку, или отказаться
+   * 
+   *   */
+  const confirmOrder = () => {
+
+    Alert.alert(
+      "Подтверждение заказа",
+      ` Фильм: ${1} \n Дата: ${123} \n Время: ${123} \n Места: ${orderParams.places.map((place, index) =>
+        `\n Ряд: ${place.y + 1} Место: ${place.x + 1}`
+      )} \n Сумма: ${orderParams.places.length >= 1 && (orderParams.places
+        .map(place => place.cost)
+        .reduce((sum, current) => current + sum) + " Руб"
+      )}`,
+      [
+        {
+          text: "Подтвердить",
+          onPress: () => console.log("Покупка подтверждена"),/* TODO: переход на экран с купленными чеками */
+          style: "default"
+        },
+        {
+          text: "Отменить",
+          onPress: () => console.log("Покупка отменена"),
+          style: 'destructive'
+        }
+      ],
+      { cancelable: false }
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -112,14 +135,14 @@ function TicketOrderScreen(props) {
 
           <View style={styles.optionsChoose}>
             <View style={styles.сhooseWrapper}>
-              <Text style={styles.сhooseTitle}>Дата показа</Text>
+              <CustomText type={"label"}>Дата показа</CustomText>
               <ScrollView style={styles.dateList} horizontal={true}>
                 {dateList.map((item, index) => chooseItem(item, type = 'date', index))}
               </ScrollView>
             </View>
 
             <View style={styles.сhooseWrapper}>
-              <Text style={styles.сhooseTitle}>Время показа</Text>
+              <CustomText type={"label"} >Время показа</CustomText>
               <ScrollView style={styles.dateList} horizontal={true}>
                 {timeList.map((item, index) => chooseItem(item, type = 'time', index))}
               </ScrollView>
@@ -133,27 +156,31 @@ function TicketOrderScreen(props) {
             <HallLayout style={styles.container1} returnPlaces={returnPlaces}></HallLayout>
           </ScrollView>
           <View style={styles.orderInfoGroup}>
-            <View style={styles.orderInfoItem}>
-              <Text style={styles.orderInfoTitle}>Дата:</Text>
-              <Text style={styles.orderInfoText}>{orderParams.showDate}</Text>
+            <View style={styles.orderInfoItemDate}>
+              <CustomText type={"label"}>Дата</CustomText>
+              <CustomText type={"description"}>{orderParams.showDate}</CustomText>
             </View>
-            <View style={styles.orderInfoItem}>
-              <Text style={styles.orderInfoTitle}>Время:</Text>
-              <Text style={styles.orderInfoText}>{orderParams.showTime}</Text>
+            <View style={styles.orderInfoItemTime}>
+              <CustomText type={"label"}>Время</CustomText>
+              <CustomText type={"description"}>{orderParams.showTime}</CustomText>
             </View>
-            <View style={styles.orderInfoItem}>
-              <Text style={styles.orderInfoTitle}>Место:</Text>
+            <View style={styles.orderInfoItemPlace}>
+              <CustomText type={"label"}>Место</CustomText>
               {/* при выводе выбранных мест, их номер увеличивается на единицу. И увеличивается здесь, а не в передаваемых и данных. */}
-              <View >{orderParams.places.map((place, index) => <Text style={styles.orderInfoText} key={index} >{`Ряд: ${place.y+1} Место: ${place.x+1}`}</Text>)}</View>
+              <View >
+                {orderParams.places.map((place, index) =>
+                  <CustomText key={index} type={"description"}>{`Ряд: ${place.y + 1} Место: ${place.x + 1}`}</CustomText>
+                )}
+              </View>
             </View>
-            <View style={styles.orderInfoItem}>
-              <Text style={styles.orderInfoTitle}>Стоимость:</Text>
-              <Text style={styles.orderInfoText}>
-                {orderParams.places.length >= 1 && orderParams.places
+            <View style={styles.orderInfoItemCost}>
+              <CustomText type={"label"}>Стоимость</CustomText>
+              <CustomText type={"description"}>
+                {orderParams.places.length >= 1 && (orderParams.places
                   .map(place => place.cost)
-                  .reduce((sum, current) => current + sum)
-                } Руб
-              </Text>
+                  .reduce((sum, current) => current + sum) + " Руб"
+                )}
+              </CustomText>
             </View>
           </View>
           <Separator></Separator>
@@ -161,7 +188,7 @@ function TicketOrderScreen(props) {
 
       </ScrollView>
       <View style={styles.formButtonWrapper}>
-        <FormButton buttonTitle="Выбрать сеанс"></FormButton>
+        <FormButton buttonTitle="Заказать билеты" onPress={confirmOrder}></FormButton>
       </View>
     </View>
   )
@@ -201,7 +228,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     paddingLeft: 15,
-
   },
   filmTitle: {
     color: '#fff',
@@ -244,7 +270,6 @@ const styles = StyleSheet.create({
 
 
   /* ///////////////// body //////////////// */
-  /*  FIXME: сделать анимированный выбор items */
   body: {
     paddingHorizontal: 15,
     paddingTop: 15,
@@ -282,7 +307,6 @@ const styles = StyleSheet.create({
 
 
   /* //////////////////// orderInfoGroup /////////////////////// */
-
   hallContainer: {
     width: '100%',
     marginTop: 20
@@ -294,18 +318,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
   },
-  orderInfoItem: {
-  },
-  orderInfoTitle: {
-    color: '#999',
-    fontSize: 12
-  },
-  orderInfoText: {
 
-    color: '#fff',
-    fontSize: 14
+  /* классы для разметки по ширине */
+  orderInfoItemDate: {
+    width: '27%',
   },
+  orderInfoItemTime: {
+    width: '18%',
+  },
+  orderInfoItemPlace: {
 
+    width: '38%',
+  },
+  orderInfoItemCost: {
+    width: '20%',
+  },
 
 
 

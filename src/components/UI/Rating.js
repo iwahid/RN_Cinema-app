@@ -1,6 +1,8 @@
 import React from 'react';
 import { Entypo } from '@expo/vector-icons'
 import { THEME } from '../../theme';
+import { View, Text, StyleSheet } from 'react-native';
+import CustomText from './CustomText';
 
 const Rating = ({ rating }) => {
   let whole = Math.trunc(rating / 2)
@@ -11,9 +13,19 @@ const Rating = ({ rating }) => {
   for (let i = 0; i < whole; i++) {
     result.push(<Entypo name="star" size={18} color={THEME.ACCENT_COLOR} key={i} />)
   }
-  
-  fractional ? result.push(<Entypo name="star-outlined" size={18} color={THEME.ACCENT_COLOR} key={10}/>) : null
-  return (result);
+
+  fractional ? result.push(<Entypo name="star-outlined" size={18} color={THEME.ACCENT_COLOR} key={10} />) : null
+  return (
+    <View style={styles.spec}>{result}
+      <CustomText type='description'>{'   IMDB: ' + rating}</CustomText>
+    </View>);
 }
+
+const styles = StyleSheet.create({
+  spec: {
+    flexDirection: 'row',
+    width: '100%'
+  }
+})
 
 export default Rating;

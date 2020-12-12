@@ -6,6 +6,7 @@ import { THEME } from '../theme'
 import FormButton from '../components/UI/Button'
 import data from '../data'
 import TicketOrderScreen from './TicketOrderScreen'
+import CustomText from '../components/UI/CustomText'
 
 
 function FilmDescription(props) {
@@ -44,10 +45,10 @@ function FilmDescription(props) {
           </ImageBackground>
         </View>
         <View style={styles.filmPlot}>
-          <Text style={styles.filmPlotTitle}>Сюжет</Text>
-          <Text style={styles.filmPlotDescription}>{film.description}</Text>
+          <CustomText type={'h3'}>Сюжет</CustomText>
+          <Text style={styles.filmPlotDescription}>{'\t'}{'\t'}{film.description}</Text>
         </View>
-
+        {/* FIXME: можно добавить слайдер с кадрами/постерами из фильма (если такие получится найти через API) */}
       </ScrollView>
       <View style={styles.formButtonWrapper}>
         <FormButton onPress={() => ticketOrderHandler()} buttonTitle="Выбрать сеанс" ></FormButton>

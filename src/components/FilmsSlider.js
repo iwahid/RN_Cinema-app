@@ -21,8 +21,9 @@ const FilmsSlider = ({ navigation, size, sliderTitle, filmsList }) => {
             <Image source={{ uri: item.img }} style={styles.carouselImage} />
           </View>
           <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.rating}> <Rating style={styles.rating} rating={item.rating}></Rating> {'IMDB: ' + item.rating}</Text>
-
+          <Text style={styles.rating}>
+            <Rating style={styles.rating} rating={item.rating}></Rating>
+          </Text>
         </View>
 
       </TouchableOpacity>

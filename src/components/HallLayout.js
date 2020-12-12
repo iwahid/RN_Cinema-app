@@ -11,7 +11,6 @@ import { THEME } from '../theme'
  */
 function HallLayout(props) {
 
-
   const placeRoomRender = () => {
 
     /* карта зала */
@@ -58,7 +57,6 @@ function HallLayout(props) {
     }, [choosePlaces]);
 
 
-
     /* функция выбора места, на сформированном зале */
     const setPlaceHandler = (place) => {
       console.log("Выбрано место ", place)
@@ -86,8 +84,6 @@ function HallLayout(props) {
         setChoosePlaces(prev => [...prev, place])
         updateChoosePlaceMap(prev => [...prev, prev[place.y][place.x].status = 3])
       }
-
-      console.log("Выбрано: ", choosePlaces.length, " мест, стоимостями: ", choosePlaces.map(item => item.cost))
     }
 
 
@@ -109,7 +105,7 @@ function HallLayout(props) {
           )
 
         if (subArray[j] == 0) /* формирование "проходов" в карте зала */
-          subResult.push(<TouchableOpacity style={styles.hallway}></TouchableOpacity>)
+          subResult.push(<TouchableOpacity style={styles.hallway} key={i + '' + j}></TouchableOpacity>)
       }
       /* формирование целого рядя в общей схеме*/
       result.push(<View key={i} style={styles.row}>{subResult.map(item => item)}</View>)
@@ -120,8 +116,6 @@ function HallLayout(props) {
     const hallScheme = <View style={styles.hallContainer}>{result.map(item => item)}</View>
     return hallScheme /* FIXME: просто добавить стили View и onPress к кнопкам */
   }
-
-  let temp = placeRoomRender()
 
   return (
     <View style={styles.container}>
@@ -142,7 +136,7 @@ function HallLayout(props) {
       <Image source={require('./../../assets/Screen.png')} style={styles.screenImg} />
 
       <View >
-        {temp}
+        {placeRoomRender()}
       </View>
     </View>
 
@@ -192,10 +186,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 3,
     backgroundColor: '#9DA2B6',
   },
-  /* 
-  #F85661 выбранный
-  9DA2B6 не доступно
-  2F2F3B доступно */
   row: {
     flexDirection: 'row'
   },
@@ -215,7 +205,7 @@ const styles = StyleSheet.create({
     marginBottom: 40
   },
   placeDescriptionTitle: {
-    
+
     color: '#999',
     fontSize: 12
   }
