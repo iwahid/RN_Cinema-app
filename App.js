@@ -28,7 +28,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
-        <StatusBar style='auto'></StatusBar>
+        <StatusBar style='dark'></StatusBar>
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
@@ -42,25 +42,16 @@ export default function App() {
           <Stack.Screen name="home" component={MainScreen} options={{
             headerTitle: 'Кинотеатр',
             headerTintColor: '#fff',
-            headerRight: () => (
-              <Text>123</Text>
-            )
           }} />
           <Stack.Screen name="filmDescription" component={FilmDescription}
             options={{
               headerTitle: 'Описание картины',
               headerTintColor: '#fff',
-              headerRight: () => (
-                <Text>123</Text>
-              )
             }} />
           <Stack.Screen name="ticketOrder" component={TicketOrderScreen}
             options={{
               headerTitle: 'Заказ билета',
               headerTintColor: '#fff',
-              headerRight: () => (
-                <Text>123</Text>
-              )
             }} />
         </Stack.Navigator>
       </NavigationContainer>

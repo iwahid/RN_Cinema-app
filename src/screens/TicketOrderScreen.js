@@ -187,7 +187,7 @@ function TicketOrderScreen(props) {
 
       </ScrollView>
       <View style={styles.formButtonWrapper}>
-        <FormButton buttonTitle="Заказать билеты" onPress={confirmOrder}></FormButton>
+        <FormButton onPress={confirmOrder}>Заказать билеты</FormButton>
       </View>
     </View>
   )
