@@ -1,12 +1,16 @@
 import React from 'react';
 import {Text, Button, TouchableOpacity, StyleSheet} from 'react-native';
 import { THEME } from '../../theme';
-/* import {windowHeight, windowWidth} from '../utils/Dimentions'; */
 
-const FormButton = ({buttonTitle, ...rest}) => {
+/**
+ * Компонент - кастомная кнопка.
+ * @param  {string} props.children - дочерним элементом передаётся title кнопки
+ * @return {TouchableOpacity} Компонент.
+ */
+const FormButton = (props) => {
   return (
-    <TouchableOpacity style={styles.buttonContainer} {...rest}>
-      <Text style={styles.buttonText}>{buttonTitle}</Text>
+    <TouchableOpacity style={styles.buttonContainer} onPress={props.onPress}>
+      <Text style={styles.buttonText}>{props.children}</Text>
     </TouchableOpacity>
   );
 };

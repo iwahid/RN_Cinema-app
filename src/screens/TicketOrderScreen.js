@@ -77,7 +77,6 @@ function TicketOrderScreen(props) {
 
   /**
    * Функция подтверждения заказа. Выводит алерт с просьбой подтвердить покупку, или отказаться
-   * 
    *   */
   const confirmOrder = () => {
 
@@ -193,7 +192,6 @@ function TicketOrderScreen(props) {
     </View>
   )
 }
-
 
 
 const styles = StyleSheet.create({

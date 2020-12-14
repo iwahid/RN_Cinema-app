@@ -13,7 +13,7 @@ function HallLayout(props) {
 
   const placeRoomRender = () => {
 
-    /* карта зала */
+    /* карта зала. Моковые данные. Общая схема зала, в котором будет проходить показ. Нужны для того, что бы построить интерактивную карту зала, по которой пользователь может выбрать себе место*/
     let hallMap = [
       [0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0],
       [0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0],
@@ -27,7 +27,7 @@ function HallLayout(props) {
       [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1]
     ]
 
-    /* карта мест для бронирования
+    /* карта мест для бронированияю Моковые данные. Будут уникальными для каждого сеанса (на каждую дату-время свой статус заполенности зрительного зала)
     0 - проход
     1 - свободно
     2 - забранировано
@@ -49,7 +49,7 @@ function HallLayout(props) {
     )
 
     /* массив с объектами-значениями выбранного места */
-    let [choosePlaces, setChoosePlaces] = useState([]) /* { x: Number, y: Number, cost: Number} */
+    let [choosePlaces, setChoosePlaces] = useState([]) /* { positionX: Number, positionY: Number, cost: Number} */
 
     /* хук, асинхронно возвращающий данные о выбранных пользователем местах */
     useEffect(() => {
@@ -85,7 +85,6 @@ function HallLayout(props) {
         updateChoosePlaceMap(prev => [...prev, prev[place.y][place.x].status = 3])
       }
     }
-
 
     /* рендер карты зала */
     let result = []
@@ -144,7 +143,6 @@ function HallLayout(props) {
 }
 
 
-
 const styles = StyleSheet.create({
   container: {
     width: '100%',
@@ -194,7 +192,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '100%',
     marginBottom: 25
-
   },
   placeDescriptionItem: {
     alignItems: 'center',
@@ -205,12 +202,9 @@ const styles = StyleSheet.create({
     marginBottom: 40
   },
   placeDescriptionTitle: {
-
     color: '#999',
     fontSize: 12
   }
-
-
 })
 
 export default HallLayout

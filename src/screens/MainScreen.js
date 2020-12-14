@@ -3,30 +3,13 @@ import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image } from
 import { ScrollView } from 'react-native-gesture-handler';
 import FilmsSlider from '../components/FilmsSlider'
 
-
 import { DATA } from '../data'
 import { THEME } from '../theme';
 
 const MainScreen = (props) => {
-  /* FIXME: заменить на нормальные данные */
+  /* FIXME: заменить моковые данные на данные, полученные из API */
   const { popularList, otherList } = DATA
   const navigation = props.navigation
-
-
-  const renderItem = ({ item }) => {
-    return (
-      <View style={styles.item}>
-        <View style={styles.carouselImageWrapper}>
-          <Image source={{
-            uri: item.img,
-          }} style={styles.carouselImage} />
-        </View>
-
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.rating}>{item.rating}</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>

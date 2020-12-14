@@ -4,11 +4,12 @@ import { ScrollView } from 'react-native-gesture-handler'
 import Rating from './../components/UI/Rating'
 import { THEME } from '../theme'
 import FormButton from '../components/UI/Button'
-import data from '../data'
-import TicketOrderScreen from './TicketOrderScreen'
 import CustomText from '../components/UI/CustomText'
 
-
+/**
+ * Компонент, представляющий собой отдельную страницу с детальным описанием фильма. Позволяет перейти к выбору сеанса на этот фильм
+ * @return {View} Компонент.
+ */
 function FilmDescription(props) {
 
   /* некоторые данные, переданные из React компонента, а не экрана Stack.screen. */
@@ -18,7 +19,6 @@ function FilmDescription(props) {
   function ticketOrderHandler(id) {
     props.navigation.navigate('ticketOrder', { film })
   }
-
 
   return (
     <View style={styles.container}>
@@ -51,13 +51,11 @@ function FilmDescription(props) {
         {/* FIXME: можно добавить слайдер с кадрами/постерами из фильма (если такие получится найти через API) */}
       </ScrollView>
       <View style={styles.formButtonWrapper}>
-        <FormButton onPress={() => ticketOrderHandler()} buttonTitle="Выбрать сеанс" ></FormButton>
+        <FormButton onPress={() => ticketOrderHandler()} >Выбрать сеанс</FormButton>
       </View>
     </View>
   )
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -158,8 +156,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     bottom: 0,
-    padding: 10,/* 
-    backgroundColor: 'white' */
+    padding: 10,
   },
 })
 

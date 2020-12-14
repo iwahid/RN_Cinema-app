@@ -1,10 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity } from 'react-native';
-
-import { Entypo } from '@expo/vector-icons'
 import Rating from './UI/Rating'
-
-
 
 const FilmsSlider = ({ navigation, size, sliderTitle, filmsList }) => {
 
@@ -16,7 +12,6 @@ const FilmsSlider = ({ navigation, size, sliderTitle, filmsList }) => {
     return (
       <TouchableOpacity activeOpacity={0.7} onPress={() => openFilmHandler(filmsList, item.id)}>{/* вызываю колбек, в котором возвращаю выбранный айтем */}
         <View style={styles.item}>
-
           <View style={styles.carouselImageWrapper}>
             <Image source={{ uri: item.img }} style={styles.carouselImage} />
           </View>
@@ -25,7 +20,6 @@ const FilmsSlider = ({ navigation, size, sliderTitle, filmsList }) => {
             <Rating style={styles.rating} rating={item.rating}></Rating>
           </Text>
         </View>
-
       </TouchableOpacity>
     );
   }
@@ -64,7 +58,6 @@ const FilmsSlider = ({ navigation, size, sliderTitle, filmsList }) => {
       fontSize: 22,
       fontWeight: "400",
       marginBottom: 5,
-
     },
     rating: {
       color: '#ccc',

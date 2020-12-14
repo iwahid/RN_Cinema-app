@@ -1,14 +1,18 @@
 import React from 'react';
 import { Entypo } from '@expo/vector-icons'
 import { THEME } from '../../theme';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import CustomText from './CustomText';
 
+/**
+ * Компонент, отображающий рейтинг фильма в виде нескольких звёзд и их числового представления.
+ * @param  {number} rating - Рейтинг, на основе которого будет выстроен компонент
+ * @return {View} Компонент.
+ */
 const Rating = ({ rating }) => {
   let whole = Math.trunc(rating / 2)
   let fractional = (rating % 2) > 0 ? true : false
 
-  /* FIXME: заменить цвет на общее значение */
   let result = []
   for (let i = 0; i < whole; i++) {
     result.push(<Entypo name="star" size={18} color={THEME.ACCENT_COLOR} key={i} />)
