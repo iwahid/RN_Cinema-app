@@ -79,9 +79,88 @@ export default function App() {
    }
    addData(filmsIdList) */
 
-  const [filmsList, setFilmsList] = useState({})
+  /*  "filmId",
+    "nameRu",
+    "nameEn",
+    "webUrl",
+    "posterUrl",
+    "posterUrlPreview",
+    "year",
+    "filmLength",
+    "slogan",
+    "description",
+    "type",
+    "ratingMpaa",
+    "ratingAgeLimits",
+    "premiereRu",
+    "distributors",
+    "premiereWorld",
+    "premiereDigital",
+    "premiereWorldCountry",
+    "premiereDvd",
+    "premiereBluRay",
+    "distributorRelease",
+    "countries",
+    "genres",
+    "facts",
+    "seasons", */
 
-  const loadFilmList = async () => {
+
+
+
+  /* FIXME: наладить внутри конвеер запросов. */
+  /* загрузка данных по API, с использованием id */
+  const [fullFilmsList, setFullFilmsList] = useState([])
+
+  const loadFullFilmList = async (filmsIDList) => {
+    /* создание объекта с данными о каждом фильме */
+    function Film(id, name, url) {
+      this.id = id;
+      this.name = name;
+      this.url = url
+    }
+
+    const myArray = {}
+
+    const loadingList = (key) => {
+
+      myArray[key] = []
+      filmsIDList[key].forEach(async (item) => {
+
+        let url = `https://kinopoiskapiunofficial.tech/api/v2.1/films/${item}`
+        let response = await fetch(url, {
+          headers: {
+            accept: 'application/json',
+            'X-API-KEY': 'b3aed60d-270b-4a78-b0d6-81f2b08cc274'
+          }
+        })
+
+        let result = await response.json()
+        myArray[key].push(new Film(result.data.filmId, result.data.nameRu, result.data.posterUrl))
+
+        console.log('-------------+++++++++++++++++++++++++++--------------', myArray)
+      })
+      setFullFilmsList(myArray)
+
+      console.log(')))))))))))))))))))))))))))))))))', fullFilmsList)
+    }
+
+    Object.keys(filmsIDList).map(key => loadingList(key))
+
+    /*     loadingList(filmsIDList.soonList) */
+  }
+
+  /* получение данных по API только после того, как получены актуальные (на текущий момент) id из firebase */
+  useEffect(() => {
+    loadFullFilmList(filmsIDList)
+  }, [filmsIDList])
+
+
+
+  /* загруженные данные из firebase о фильмах по категориям */
+  const [filmsIDList, setFilmsIDList] = useState({})
+
+  const loadFilmsListFirebase = async () => {
     const response = await fetch(
       'https://rn-cinema-app-default-rtdb.firebaseio.com/data.json',
       {
@@ -90,13 +169,30 @@ export default function App() {
       }
     )
     const data = await response.json()
-    console.log('DATA', data)
-    const films = Object.keys(data).map(key => ({...data[key], id: key}))
-    console.log('films', films)
-    console.log('films', films[0].leaveList)
-    /* сохранять данные во внутреннем стейте приложения */
+    const films = Object.keys(data).map(key => ({ ...data[key] }))
+
+    /* преобразую полученный ответ к удобному формату. Теперь это объект, свойства которого - отдельные группы категории фильмов*/
+    const filmsCategories = films[0]
+    setFilmsIDList(filmsCategories)
   }
-  loadFilmList()
+
+  /* загрузка списка актуальных фильмов из firebase, при запуске приложения */
+  useEffect(() => {
+    loadFilmsListFirebase()
+  }, [])
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   /* TODO: здесь я получаю списки всех доступных фильмов.
     И загружаю по ним: [название, обложка, рейтинг] 
